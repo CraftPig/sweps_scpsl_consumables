@@ -1,0 +1,24 @@
+"VertexLitGeneric"
+{
+    "$basetexture" "models/weapons/sweps/scpsl/500/pill_low_SCP 500_AlbedoTransparency"
+    "$bumpmap" "models/weapons/sweps/scpsl/500/pill_low_SCP 500_Normal"
+
+    "$color2" "[1 1 1]"
+    "$blendtintbybasealpha" "1"
+
+    "$normalmapalphaenvmapmask" "1"
+    "$envmapfresnel" "1"
+    "$envmap" "env_cubemap"
+    "$envmaptint" "[0.2 0.2 0.2]"
+
+    //remove this if viewing outside of MWB
+    "Proxies"
+    {
+        "MwEnvMapTint"
+        {
+            "specularity" "0.5"             //0.25, 0.5, 0.75, 1
+            "min" "0"
+            "max" "0.2"                       //change this if too bright in game
+        }
+    }
+}

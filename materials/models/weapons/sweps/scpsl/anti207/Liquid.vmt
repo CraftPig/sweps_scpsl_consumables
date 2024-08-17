@@ -1,0 +1,29 @@
+//if you don't know what a parameter does, visit:
+//https://developer.valvesoftware.com/wiki/$phong
+"VertexLitGeneric"
+{
+    "$basetexture" "models/weapons/sweps/scpsl/anti207/Mat_Anti207_AlbedoTransparency"
+    "$bumpmap" "models/weapons/sweps/scpsl/207/Mat_207_Normal"
+    "$phongexponenttexture" "models/weapons/sweps/scpsl/207/SCP207 MaskMap"
+	
+	$translucent 0
+    $additive 0
+
+    "$color2" "[15 15 15]"
+    "$blendtintbybasealpha" "1"
+
+    "$phong"                    "1"
+    "$phongboost"               "1"
+    "$phongfresnelranges"       "[0.1 0.5 2]"
+    "$phongalbedotint"          "0"
+
+    "$rimlight"                 "1"
+    "$rimlightexponent"         "100"
+    "$rimmask"                  "1"
+    "$rimlightboost"            "0"
+
+    "$normalmapalphaenvmapmask" "1"
+    "$envmapfresnel"            "1"
+    "$envmap"                   "env_cubemap"
+    "$envmaptint"               "[0.05 0.05 0.05]"
+}
