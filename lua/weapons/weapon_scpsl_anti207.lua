@@ -110,6 +110,8 @@ function SWEP:PrimaryAttack()
     local owner = self.Owner
 
     if owner:GetAmmoCount(self.Primary.Ammo) == 0 then return end
+	
+	if owner:HaveEffect("Panacea") then return end
 
     self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
 	self:SetNextPrimaryFire(CurTime() + self.Owner:GetViewModel():SequenceDuration() + 0)

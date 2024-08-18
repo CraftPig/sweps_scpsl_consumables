@@ -3,6 +3,18 @@
 SEF Status Effects
 -----------------------------------------------------------------------------------------------------
 ]]
+StatusEffects.SCP1853 = {
+    Name = "SCP-1853",
+    Icon = "SEF_Icons/SCPSL1853.png",
+    Desc = "Increases motor skills when in danger.",
+	Type = "BUFF",
+    Effect = function(ent, time)   
+        ent.Consumed1853 = 1
+    end,
+    HookType = "",
+    HookFunction = function() end
+}
+
 StatusEffects.Panacea = {
     Name = "Panacea",
     Icon = "SEF_Icons/ThePanacea.png",
@@ -44,8 +56,11 @@ StatusEffects.Panacea = {
             end
         end
 		
+		if ent:HaveEffect("SCP1853") then ent:SoftRemoveEffect("SCP1853") end
+		
 		ent.Consumed207 = 0
 		ent.ConsumedAnti207 = 0
+		ent.Consumed1853 = 0
     end,
     HookType = "",
     HookFunction = function() end

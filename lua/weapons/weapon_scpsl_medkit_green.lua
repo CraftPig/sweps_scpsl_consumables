@@ -1,5 +1,5 @@
 if CLIENT then 
-    SWEP.WepSelectIcon = surface.GetTextureID( "vgui/hud/medkit" )
+    SWEP.WepSelectIcon = surface.GetTextureID( "vgui/hud/medkit_green" )
 	SWEP.BounceWeaponIcon = true 
     SWEP.DrawWeaponInfoBox = true
 end

@@ -5,7 +5,6 @@ if SERVER then
 	local PoisonTime = 5
 	
 	-- hook.Add("PlayerInitialSpawn", "HookInitializeDangerSpawn", function(owner) -- Get Default Values
-	    
 	-- end)
 	
 	local function ResetBuffs(owner) 
@@ -14,11 +13,6 @@ if SERVER then
 		owner.ConsumedAnti207 = 0
         owner.Danger1853Stacks = 0
 		owner.Danger1853Timer = CurTime() 
-		owner.Decay207Timer = CurTime() 
-		owner.RegenAnti207Timer = CurTime() 
-		
-		owner:SetJumpPower(owner.DefaultJumpHeightSCPSL)
-        owner:SetRunSpeed(owner.DefaultRunSpeedSCPSL)
     end
 
     local function ApplyPoison(owner)
@@ -30,13 +24,9 @@ if SERVER then
 	
 	hook.Add("PlayerSpawn", "HookResetStatusSCPSL", function(owner) -- Buffs Fallback		
         ResetBuffs(owner)
-		owner.DefaultJumpHeightSCPSL = owner:GetJumpPower()  
-        owner.DefaultRunSpeedSCPSL = owner:GetRunSpeed()	
     end)
     
     hook.Add("PlayerInitialSpawn", "HookInitializeStatusSCPSL", function(owner) -- Buffs Fallback		
-        owner.DefaultJumpHeightSCPSL = owner:GetJumpPower()  
-        owner.DefaultRunSpeedSCPSL = owner:GetRunSpeed()
 		ResetBuffs(owner) 
     end)
 
@@ -54,6 +44,8 @@ if SERVER then
 				owner.Danger1853Timer = CurTime() + StackDepleteTime -- Reset Deplete Timer
 				
 				TotalDamage = 0 
+				
+				owner:ApplyEffect("Haste", 20, (20 * owner.Danger1853Stacks), 1)
 
                 -- owner:ChatPrint(owner.Danger1853Stacks ) -- Debug					
 			end
@@ -67,6 +59,8 @@ if SERVER then
                 if owner.Danger1853Stacks == 5 then
                     owner:StartLoopingSound("scpsl_1853_heartbeat")
                 end
+				
+				
 
                 if owner.Danger1853Timer <= CurTime() then -- Reduce Danger stacks
                     if owner.Danger1853Stacks > 0 then
@@ -74,11 +68,15 @@ if SERVER then
                     end
                     owner.Danger1853Stacks = math.max(0, owner.Danger1853Stacks - 1)
                     owner.Danger1853Timer = CurTime() + StackDepleteTime
+					
+					if owner.Danger1853Stacks == 0 then return end
+					owner:ApplyEffect("Haste", 20, (20 * owner.Danger1853Stacks), 1)
                 end
+				
+				
 
-                if owner.Danger1853Timer > 19 then -- Update 1853 stats
-                    owner:SetJumpPower(owner.DefaultJumpHeightSCPSL * (1 + 0.1 * owner.Danger1853Stacks))
-                    owner:SetRunSpeed(owner.DefaultRunSpeedSCPSL * (1 + 0.05 * owner.Danger1853Stacks))
+                if owner.Danger1853Timer < 20 then -- Update 1853 stats
+                    
                 end
             end
 
