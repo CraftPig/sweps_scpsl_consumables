@@ -41,8 +41,17 @@ local HealTime = 1.8
 local RegenAmount = 5
 local RegenDuration = 20
 
+local InitializeSEF = false
+
 function SWEP:Initialize()
     self:SetHoldType("slam")
+	
+	local FilePathSEF = "lua/SEF/SEF_Functions.lua"
+    if file.Exists(FilePathSEF, "GAME") then
+        InitializeSEF = true
+    else
+        InitializeSEF = false
+    end
 end  
 
 function SWEP:Deploy()
@@ -62,28 +71,25 @@ local function Heal(owner, weapon)
     local activeWeapon = owner:GetActiveWeapon()
 
     if IsValid(weapon) then
-        if IsValid(owner) and SERVER and activeWeapon:GetClass() == "weapon_scpsl_500" then -- Reminder
-            owner:SetHealth(math.min(owner:GetMaxHealth(), owner:Health() + HealAmount))
-            owner:SetArmor(math.min(owner:GetMaxArmor(), owner:Armor() + ArmorAmount))
-            owner:RemoveAmmo(1, "scp-500") -- Reminder
-            -- owner:EmitSound("scpsl_medkit_use_03")
-            weapon:Deploy()
+        if IsValid(owner) and SERVER and activeWeapon:GetClass() == "weapon_scpsl_500" then -- Reminder		
+			if InitializeSEF == true then
+			    owner:ApplyEffect("Healing", 1, 100, 1)
+				owner:ApplyEffect("Panacea", 10)
+				-- owner:SoftRemoveEffect("Exposed") 
+			else
+                owner:SetHealth(math.min(owner:GetMaxHealth(), owner:Health() + HealAmount))
+                owner:SetArmor(math.min(owner:GetMaxArmor(), owner:Armor() + ArmorAmount))
+			end
 			
 			if ( owner.Consumed1853 == 1 or owner.Consumed207 > 0 or owner.ConsumedAnti207 > 0 or owner.HasDrinkSCP207 == true ) then
-			
 			    if owner.Consumed1853 == 1 then owner:ChatPrint("Cured SCP 1853's effects") end
 				if owner.Consumed207 ~= 0 or owner.HasDrinkSCP207 == true then owner:ChatPrint("Cured SCP 207's effects") end
 				if owner.ConsumedAnti207 ~= 0 then owner:ChatPrint("Cured SCP Anti-207's effects") end
-			
 				hook.Run("ResetBuffsSCPSL", owner)
-				
-				-- if IsSCP207TheRealEntityValid == true and owner.HasDrinkSCP207 == true then
-		        -- scp_207.CureEffect(self:GetOwner())
-				-- owner.HasDrinkSCP207 = nil
-		        -- end
-				
 				owner:EmitSound("scpsl_cooldown")
 			end
+			owner:RemoveAmmo(1, "scp-500") -- Reminder
+			weapon:Deploy()
         end
     end
 end

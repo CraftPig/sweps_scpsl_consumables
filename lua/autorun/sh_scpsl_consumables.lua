@@ -28,21 +28,6 @@ if SERVER then
         end
     end
 	
-	local function Apply207Decay(owner)
-	    owner:SetRunSpeed(owner.DefaultRunSpeedSCPSL * (1 + 0.15 * owner.Consumed207))
-        owner:SetHealth(owner:Health() - owner.Consumed207)
-        if owner:Health() <= 0 and owner:Alive() then owner:Kill() end
-	end
-	
-	local function ApplyAnti207Regen(owner)
-	    owner:SetHealth(math.min(owner:GetMaxHealth(), owner:Health() + (2 * owner.ConsumedAnti207)))
-		owner:SetRunSpeed(owner.DefaultRunSpeedSCPSL * (1 - 0.1 * owner.ConsumedAnti207))
-	end
-	
-	-- hook.Add("PlayerDeath", "HookOnDeathResetSCPSL", function(owner) -- Special Buffs Fallback
-	    -- if owner.Consumed1853 == 0 or owner.Consumed207 == 0 then return end
-	-- end)
-	
 	hook.Add("PlayerSpawn", "HookResetStatusSCPSL", function(owner) -- Buffs Fallback		
         ResetBuffs(owner)
 		owner.DefaultJumpHeightSCPSL = owner:GetJumpPower()  
@@ -96,16 +81,6 @@ if SERVER then
                     owner:SetRunSpeed(owner.DefaultRunSpeedSCPSL * (1 + 0.05 * owner.Danger1853Stacks))
                 end
             end
-
-            if owner.Consumed207 > 0 and owner.Decay207Timer <= CurTime() then -- 207 Stuff
-                owner.Decay207Timer = CurTime() + 10
-				Apply207Decay(owner)
-            end
-			
-			if owner.ConsumedAnti207 > 0 and owner.RegenAnti207Timer <= CurTime() then -- Anti 207 Stuff
-			    owner.RegenAnti207Timer = CurTime() + 2
-			    ApplyAnti207Regen(owner)
-			end
 
             if owner.Consumed1853 == 1 and (owner.Consumed207 > 0 or owner.ConsumedAnti207 > 0) and PoisonTime <= CurTime() then -- Apply Poison 
                 PoisonTime = CurTime() + 5

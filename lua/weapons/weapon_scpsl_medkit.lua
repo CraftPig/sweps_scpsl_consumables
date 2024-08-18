@@ -6,7 +6,11 @@ end
 
 SWEP.PrintName = "Medkit"
 SWEP.Author = "Craft_Pig"
-SWEP.Purpose = "Heals 65 Health."
+SWEP.Purpose = 
+[[
+Heals 65 Health.
+Cures Bleeding and Exposed debuff                        					
+]]
 SWEP.Category = "SCP"
 
 SWEP.ViewModelFOV = 65
@@ -32,10 +36,19 @@ SWEP.Secondary.Automatic = false
 
 local HealAmount = 65
 local ArmorAmount = 0
+local InitializeSEF = false
 
 function SWEP:Initialize()
     self:SetHoldType("slam")
-end  
+	
+	local FilePathSEF = "lua/SEF/SEF_Functions.lua"
+    if file.Exists(FilePathSEF, "GAME") then
+        InitializeSEF = true
+    else
+        InitializeSEF = false
+    end
+
+end 
 
 function SWEP:Deploy()
     local owner = self:GetOwner() 
@@ -45,6 +58,15 @@ function SWEP:Deploy()
 	self.Idle = 0
 	self.InitializeHealing = 0
 	self.vmcamera = nil
+	
+	timer.Simple(0.05, function()
+        if IsValid(self) and IsValid(self.Owner) then
+            local vm = self.Owner:GetViewModel()
+            if IsValid(vm) then
+                vm:SetSkin(0) -- Change this to 1 if you want the second texture group
+            end
+        end
+    end)
 
 	-- self:SetNextPrimaryFire(CurTime() + self.Owner:GetViewModel():SequenceDuration())
 	
@@ -56,14 +78,21 @@ local function Heal(owner, weapon)
 
     if IsValid(weapon) then
         if IsValid(owner) and SERVER and activeWeapon:GetClass() == "weapon_scpsl_medkit" then -- Reminder
-            owner:SetHealth(math.min(owner:GetMaxHealth(), owner:Health() + HealAmount))
-            owner:SetArmor(math.min(owner:GetMaxArmor(), owner:Armor() + ArmorAmount))
+		
+		    if InitializeSEF == true then
+			    owner:ApplyEffect("Healing", 1, 65, 1)
+				owner:RemoveEffect("Bleeding")
+				owner:SoftRemoveEffect("Exposed")
+			else
+                owner:SetHealth(math.min(owner:GetMaxHealth(), owner:Health() + HealAmount))
+                owner:SetArmor(math.min(owner:GetMaxArmor(), owner:Armor() + ArmorAmount))
+			end
             owner:RemoveAmmo(1, "medkit") -- Reminder
             owner:EmitSound("scpsl_medkit_use_03")
             weapon:Deploy()
         end
     end
-end
+end 
 
 function SWEP:PrimaryAttack()
     local owner = self.Owner

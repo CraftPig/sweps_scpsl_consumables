@@ -1,30 +1,30 @@
-if SERVER then
-   AddCSLuaFile()
-end
-
 if CLIENT then 
-    SWEP.WepSelectIcon = surface.GetTextureID( "vgui/hud/207" )
+    SWEP.WepSelectIcon = surface.GetTextureID( "vgui/hud/medkit" )
 	SWEP.BounceWeaponIcon = true 
     SWEP.DrawWeaponInfoBox = true
 end
 
-SWEP.PrintName = "SCP 207"
+SWEP.PrintName = "Medkit (Yellow)"
 SWEP.Author = "Craft_Pig"
-SWEP.Purpose = "Harmfully increases motor skills."
+SWEP.Purpose = [[
+Restores 20hp over 10s
+Cures Bleeding
+Caps max health at 120
+]]
 SWEP.Category = "SCP"
 
 SWEP.ViewModelFOV = 65
-SWEP.ViewModel = "models/weapons/sweps/scpsl/207/v_207.mdl"
-SWEP.WorldModel = "models/weapons/sweps/scpsl/207/w_207.mdl"
+SWEP.ViewModel = "models/weapons/sweps/scpsl/medkit/v_medkit.mdl"
+SWEP.WorldModel = "models/weapons/sweps/scpsl/medkit/w_medkit.mdl"
 SWEP.UseHands = true
 SWEP.DrawCrosshair = false 
 
 SWEP.Spawnable = true
-SWEP.Slot = 5
-SWEP.SlotPos = 5
+SWEP.Slot = 0
+SWEP.SlotPos = 6
 SWEP.DrawAmmo = true
 
-SWEP.Primary.Ammo = "scp-207"
+SWEP.Primary.Ammo = "medkit"
 SWEP.Primary.ClipSize = -1
 SWEP.Primary.DefaultClip = 1
 SWEP.Primary.Automatic = false
@@ -34,11 +34,9 @@ SWEP.Secondary.ClipSize = -1
 SWEP.Secondary.DefaultClip = -1
 SWEP.Secondary.Automatic = false
 
-local HealAmount = 30
+local HealAmount = 65
 local ArmorAmount = 0
-local HealTime = 4
-
--- local IsSCP207TheRealEntityValid = false
+local InitializeSEF = false
 
 function SWEP:Initialize()
     self:SetHoldType("slam")
@@ -49,7 +47,9 @@ function SWEP:Initialize()
     else
         InitializeSEF = false
     end
-end  
+end 
+
+
 
 function SWEP:Deploy()
     local owner = self:GetOwner() 
@@ -59,62 +59,40 @@ function SWEP:Deploy()
 	self.Idle = 0
 	self.InitializeHealing = 0
 	self.vmcamera = nil
+	
+	timer.Simple(0.05, function()
+        if IsValid(self) and IsValid(self.Owner) then
+            local vm = self.Owner:GetViewModel()
+            if IsValid(vm) then
+                vm:SetSkin(3) -- Change this to 1 if you want the second texture group
+            end
+        end
+    end)
 
 	-- self:SetNextPrimaryFire(CurTime() + self.Owner:GetViewModel():SequenceDuration())
 	
-	if owner:GetAmmoCount(self.Primary.Ammo) == 0 then owner:StripWeapon("weapon_scpsl_207") end -- Reminder
+	if owner:GetAmmoCount(self.Primary.Ammo) == 0 then owner:StripWeapon("weapon_scpsl_medkit_yellow") end -- Reminder
 end
 
 local function Heal(owner, weapon)
     local activeWeapon = owner:GetActiveWeapon()
 
     if IsValid(weapon) then
-        if IsValid(owner) and SERVER and activeWeapon:GetClass() == "weapon_scpsl_207" then -- Reminder
-            owner:SetHealth(math.min(owner:GetMaxHealth(), owner:Health() + HealAmount))
-            owner:SetArmor(math.min(owner:GetMaxArmor(), owner:Armor() + ArmorAmount))
-            owner:RemoveAmmo(1, "scp-207") -- Reminder
-            -- owner:EmitSound("scpsl_medkit_use_03")
+        if IsValid(owner) and SERVER and activeWeapon:GetClass() == "weapon_scpsl_medkit_yellow" then -- Reminder
+		
+		    if InitializeSEF == true then
+				owner:ApplyEffect("HealthBoost", 120, 20)
+				owner:ApplyEffect("Healing", 10, 1, 0.5)
+				owner:SoftRemoveEffect("Bleeding")
+			else
+                owner:SetHealth(math.min(owner:GetMaxHealth(), owner:Health() + HealAmount))
+                owner:SetArmor(math.min(owner:GetMaxArmor(), owner:Armor() + ArmorAmount))
+			end
+            owner:RemoveAmmo(1, "medkit") -- Reminder
+            owner:EmitSound("scpsl_medkit_use_03")
             weapon:Deploy()
         end
     end
-end
-
-function Apply207Buff(owner, swep)
-    if owner.Consumed207 == 3 then return end
-	
-	-- if owner.Consumed207 == 0 and owner.Consumed1853 == 0 and owner.ConsumedAnti207 == 0 then
-	    -- owner.DefaultJumpHeightSCPSL = owner:GetJumpPower()  
-        -- owner.DefaultRunSpeedSCPSL = owner:GetRunSpeed()
-	-- end
-	
-	-- owner.Decay207Timer = CurTime() + 0
-	owner.Consumed207 = owner.Consumed207 + 1
-	
-	if not owner:HaveEffect("SCPCola1") and not owner:HaveEffect("SCPCola2") and not owner:HaveEffect("SCPCola3") then
-        owner:ApplyEffect("SCPCola1", math.huge)
-    elseif owner:HaveEffect("SCPCola1") then
-        owner:ApplyEffect("SCPCola2", math.huge)
-        owner:SoftRemoveEffect("SCPCola1")
-    elseif owner:HaveEffect("SCPCola2") then
-        owner:ApplyEffect("SCPCola3", math.huge)
-        owner:SoftRemoveEffect("SCPCola2")
-    end
-	
-	if owner.ConsumedAnti207 ~= 0 then
-		local explosionPos = owner:GetPos()
-                
-        local effectData = EffectData()
-        effectData:SetOrigin(explosionPos)
-        effectData:SetScale(1) -- Scale of the explosion
-        effectData:SetRadius(300) -- Explosion radius
-        effectData:SetMagnitude(100) -- Explosion magnitude
-        util.Effect("HelicopterMegaBomb", effectData, true, true)
-
-        owner:EmitSound("BaseExplosionEffect.Sound", 100, 100)
-
-        if owner:Alive() then owner:Kill() end
-        util.BlastDamage(owner, owner, explosionPos, 150, 350)
-	end
 end
 
 function SWEP:PrimaryAttack()
@@ -134,20 +112,16 @@ end
 
 function SWEP:Think()
 	local owner = self.Owner
-    -- if self.Idle == 0 and self.IdleTimer <= CurTime() then -- Idle Sequence
-		-- self:SendWeaponAnim(ACT_VM_IDLE)  
-        -- self.Idle = 1
-    -- end
+    if self.Idle == 0 and self.IdleTimer <= CurTime() then -- Idle Sequence
+		self:SendWeaponAnim(ACT_VM_IDLE)  
+        self.Idle = 1
+    end
 	
 	if self.InitializeHealing == 1 and self.IdleTimer <= CurTime() then
-	    if ( IsValid(owner) && SERVER ) then
+	    if IsValid(self) then
             Heal(owner, self)
-			if InitializeSEF == true then Apply207Buff(owner, swep) end		
 		end
 	end
-end
-
-function SWEP:SecondaryAttack()
 end
 
 function SWEP:PostDrawViewModel( vm )
@@ -174,8 +148,8 @@ if CLIENT then -- Worldmodel offset
 		local owner = self:GetOwner()
 
 		if (IsValid(owner)) then
-			local offsetVec = Vector(2, -1, -1)
-			local offsetAng = Angle(180, 0, 0)
+			local offsetVec = Vector(14, -17, -0)
+			local offsetAng = Angle(-0, 90, 90)
 			
 			local boneid = owner:LookupBone("ValveBiped.Bip01_R_Hand") -- Right Hand
 			if !boneid then return end
@@ -200,4 +174,3 @@ if CLIENT then -- Worldmodel offset
 
 	end
 end
-

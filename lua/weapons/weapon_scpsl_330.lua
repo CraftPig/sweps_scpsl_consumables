@@ -34,10 +34,17 @@ SWEP.Secondary.ClipSize = -1
 SWEP.Secondary.DefaultClip = -1
 SWEP.Secondary.Automatic = false
 
-local IsSCP207TheRealEntityValid = false
+local InitializeSEF = false
 
 function SWEP:Initialize()
     self:SetHoldType("slam")
+	
+	local FilePathSEF = "lua/SEF/SEF_Functions.lua"
+    if file.Exists(FilePathSEF, "GAME") then
+        InitializeSEF = true
+    else
+        InitializeSEF = false
+    end
 end  
 
 function SWEP:Deploy()
@@ -90,40 +97,25 @@ local function Heal(owner, weapon)
 
     if IsValid(weapon) then
         if IsValid(owner) and SERVER and activeWeapon:GetClass() == "weapon_scpsl_330" then
+		if InitializeSEF == false then return end
 		
 		------------------------------------------------------------------------------------------------------ Stupid Decision Tree
 		    if SetCandy <= 16 then -- blue
-			    owner:SetArmor(math.min(owner:GetMaxArmor(), owner:Armor() + BlueCandyArmor))
+			    owner:ApplyEffect("Energized", 1, 30, 1)
 			elseif SetCandy <= 32 then -- green
-			    timer.Create("TimerRegen330GreenCandy", 1, GreenCandyRepeat, function()
-                    if IsValid(owner) and owner:Alive() then
-                        owner:SetHealth(math.min(owner:Health() + GreenCandyRegen, owner:GetMaxHealth()))
-                    else
-                        timer.Remove("TimerRegen330GreenCandy")
-                    end
-                end)
+			    owner:ApplyEffect("Healing", 80, 1, 1)
+				owner:ApplyEffect("Tenacity", 30)
 			elseif SetCandy <= 48 then -- purple
-			    timer.Create("TimerRegen330PurpleCandy", 1, PurpleCandyRepeat, function()
-                    if IsValid(owner) and owner:Alive() then
-                        owner:SetHealth(math.min(owner:Health() + PurpleCandyRegen, owner:GetMaxHealth()))
-						owner:SetArmor(math.min(owner:GetMaxArmor(), owner:Armor() + PurpleCandyRegen))
-                    else
-                        timer.Remove("TimerRegen330PurpleCandy")
-                    end
-                end)
+			    owner:ApplyEffect("Healing", 15, 1, 1)
+				owner:ApplyEffect("Endurance", 15)
 			elseif SetCandy <= 64 then -- rainbow
-			    owner:SetHealth(math.min(owner:Health() + RainbowCandyHealth, owner:GetMaxHealth()))
-				owner:SetArmor(math.min(owner:GetMaxArmor(), owner:Armor() + RainbowCandyArmor))
+			    owner:ApplyEffect("Energized", 1, 15, 1)
+				owner:ApplyEffect("Healing", 1, 15, 1)
+				owner:ApplyEffect("Tenacity", 3)
 			elseif SetCandy <= 80 then -- red
-			    timer.Create("TimerRegen330RedCandy", 1, RedCandyRepeat, function()
-                    if IsValid(owner) and owner:Alive() then
-                        owner:SetHealth(math.min(owner:Health() + RedCandyRegen, owner:GetMaxHealth()))
-                    else
-                        timer.Remove("TimerRegen330RedCandy")
-                    end
-                end)
+			    owner:ApplyEffect("Healing", 5, 9, 1)
 			elseif SetCandy <= 96 then -- yellow
-			    owner:SetHealth(math.min(owner:Health() + YellowCandyHealth, owner:GetMaxHealth()))
+			    owner:ApplyEffect("Haste", 20, 40)
 			else -- pink
                 local explosionPos = owner:GetPos()
                 

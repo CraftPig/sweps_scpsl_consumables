@@ -40,8 +40,17 @@ local ArmorAmount = 0
 local RegenAmount = 3
 local RegenDuration = 15
 
+local InitializeSEF = false
+
 function SWEP:Initialize()
     self:SetHoldType("slam")
+	
+	local FilePathSEF = "lua/SEF/SEF_Functions.lua"
+    if file.Exists(FilePathSEF, "GAME") then
+        InitializeSEF = true
+    else
+        InitializeSEF = false
+    end
 end  
 
 function SWEP:Deploy()
@@ -62,10 +71,14 @@ local function Heal(owner, weapon)
 
     if IsValid(weapon) then
         if IsValid(owner) and SERVER and activeWeapon:GetClass() == "weapon_scpsl_painkillers" then -- Reminder
-            owner:SetHealth(math.min(owner:GetMaxHealth(), owner:Health() + HealAmount))
+		    if InitializeSEF == true then
+			    owner:ApplyEffect("Healing", 15, 1, 0.29 )
+			else
+			owner:SetHealth(math.min(owner:GetMaxHealth(), owner:Health() + HealAmount))
             owner:SetArmor(math.min(owner:GetMaxArmor(), owner:Armor() + ArmorAmount))
+			end
+			
             owner:RemoveAmmo(1, "painkillers") -- Reminder
-            -- owner:EmitSound("scpsl_medkit_use_03")
             weapon:Deploy()
         end
     end
@@ -105,7 +118,7 @@ function SWEP:Think()
 	if self.InitializeHealing == 1 and self.IdleTimer <= CurTime() then
 	    if IsValid(self) then
             Heal(owner, self)
-			Regenerate(owner, weapon)
+			if InitializeSEF == false then Regenerate(owner, weapon) end
 		end
 	end
 end

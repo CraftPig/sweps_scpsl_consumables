@@ -40,6 +40,13 @@ local HealTime = 4
 
 function SWEP:Initialize()
     self:SetHoldType("slam")
+	
+	local FilePathSEF = "lua/SEF/SEF_Functions.lua"
+    if file.Exists(FilePathSEF, "GAME") then
+        InitializeSEF = true
+    else
+        InitializeSEF = false
+    end
 end  
 
 function SWEP:Deploy()
@@ -73,13 +80,14 @@ end
 function ApplyAnti207Buff(owner, swep)
     if owner.ConsumedAnti207 == 2 then return end
 	
-	if owner.Consumed207 == 0 and owner.Consumed1853 == 0 and owner.ConsumedAnti207 == 0 then
-	    owner.DefaultJumpHeightSCPSL = owner:GetJumpPower()  
-        owner.DefaultRunSpeedSCPSL = owner:GetRunSpeed()
-	end
-	
-	owner.RegenAnti207Timer = CurTime() + 0
 	owner.ConsumedAnti207 = owner.ConsumedAnti207 + 1
+	
+	if not owner:HaveEffect("SCPAntiCola1") and not owner:HaveEffect("SCPAntiCola2")then
+        owner:ApplyEffect("SCPAntiCola1", math.huge)
+    elseif owner:HaveEffect("SCPAntiCola1") then
+        owner:ApplyEffect("SCPAntiCola2", math.huge)
+        owner:SoftRemoveEffect("SCPAntiCola1")
+    end
 	
 	if owner.Consumed207 ~= 0 then
 		local explosionPos = owner:GetPos()
@@ -123,8 +131,7 @@ function SWEP:Think()
 	if self.InitializeHealing == 1 and self.IdleTimer <= CurTime() then
 	    if ( IsValid(owner) && SERVER ) then
             Heal(owner, self)
-			ApplyAnti207Buff(owner, swep)
-			
+			if InitializeSEF == true then ApplyAnti207Buff(owner, swep) end
 		end
 	end
 end

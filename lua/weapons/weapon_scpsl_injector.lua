@@ -10,7 +10,10 @@ end
 
 SWEP.PrintName = "Adrenaline"
 SWEP.Author = "Craft_Pig"
-SWEP.Purpose = "Provides 40 Armor."
+SWEP.Purpose = [[
+Provides 40 Temporary Armor
+Grants +40 Units of Movespeed
+]]
 SWEP.Category = "SCP"
 
 SWEP.ViewModelFOV = 65
@@ -35,9 +38,18 @@ SWEP.Secondary.Automatic = false
 
 local HealAmount = 0
 local ArmorAmount = 40
+local InitializeSEF = false
+local DischargeTime = nil
 
 function SWEP:Initialize()
     self:SetHoldType("slam")
+	
+	local FilePathSEF = "lua/SEF/SEF_Functions.lua"
+    if file.Exists(FilePathSEF, "GAME") then
+        InitializeSEF = true
+    else
+        InitializeSEF = false
+    end
 end  
 
 function SWEP:Deploy()
@@ -55,13 +67,28 @@ end
 
 local function Heal(owner, weapon)
     local activeWeapon = owner:GetActiveWeapon()
-
+    
+	
     if IsValid(weapon) then
         if IsValid(owner) and SERVER and activeWeapon:GetClass() == "weapon_scpsl_injector" then
-            owner:SetHealth(math.min(owner:GetMaxHealth(), owner:Health() + HealAmount))
-            owner:SetArmor(math.min(owner:GetMaxArmor(), owner:Armor() + ArmorAmount))
+        
+			if InitializeSEF == true then
+			    -- if owner:HaveEffect("Discharge") then
+				    -- DischargeTime = owner:GetTimeLeft("Discharge")
+					-- owner:SoftRemoveEffect("Discharge")
+					-- owner:ApplyEffect("Energized", 1, 40, 1)
+				    -- owner:ApplyEffect("Haste", 5, 40)
+				    -- owner:ApplyEffect("Discharge", math.min(41 + DischargeTime, owner:GetMaxArmor()), 1, 1)
+				-- else
+				    owner:ApplyEffect("Energized", 1, 40, 1)
+				    owner:ApplyEffect("Haste", 5, 40)
+				    -- owner:ApplyEffect("Discharge", 41 , 1, 1)
+				-- end
+			else
+                owner:SetHealth(math.min(owner:GetMaxHealth(), owner:Health() + HealAmount))
+                owner:SetArmor(math.min(owner:GetMaxArmor(), owner:Armor() + ArmorAmount))
+			end
             owner:RemoveAmmo(1, "injector")
-            -- owner:EmitSound("scpsl_medkit_use_03")
             weapon:Deploy()
         end
     end
