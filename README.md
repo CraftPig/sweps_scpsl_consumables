@@ -1,5 +1,7 @@
 # SCP: SL Consumables
 
+## 🔽 Required Items
+[Status Effect Framework](https://steamcommunity.com/sharedfiles/filedetails/?id=3281373199) **REQUIRED**
 ## 🔽 Links
 [Workshop Page](https://steamcommunity.com/sharedfiles/filedetails/?id=3310620322)
 
