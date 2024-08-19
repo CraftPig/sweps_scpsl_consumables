@@ -70,7 +70,7 @@ end
 
 function Apply1853Buff(owner, swep)
     if owner.Consumed1853 == 1 then return end
-	owner:ApplyEffect("SCP1853", math.huge)
+	if SERVER then owner:ApplyEffect("SCP1853", math.huge) end 
 	if owner.Consumed207 == 0 and owner.Consumed1853 == 0 and owner.ConsumedAnti207 == 0 then
 	    owner.DefaultJumpHeightSCPSL = owner:GetJumpPower()  
         owner.DefaultRunSpeedSCPSL = owner:GetRunSpeed()
@@ -82,7 +82,9 @@ function SWEP:PrimaryAttack()
 
     if owner:GetAmmoCount(self.Primary.Ammo) == 0 then return end
 	
-	if owner:HaveEffect("Panacea") then return end
+	if SERVER then
+	    if owner:HaveEffect("Panacea") then return end
+	end
 
     self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
 	self:SetNextPrimaryFire(CurTime() + self.Owner:GetViewModel():SequenceDuration() + 0)
