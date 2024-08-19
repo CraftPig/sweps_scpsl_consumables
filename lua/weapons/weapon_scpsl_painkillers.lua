@@ -173,3 +173,7 @@ if CLIENT then -- Worldmodel offset
 
 	end
 end
+
+function SWEP:Holster()
+	return true
+end
