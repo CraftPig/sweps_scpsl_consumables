@@ -10,9 +10,7 @@ StatusEffects.SCP1853 = {
 	Type = "BUFF",
     Effect = function(ent, time)   
         ent.Consumed1853 = 1
-    end,
-    HookType = "",
-    HookFunction = function() end
+    end
 }
 
 StatusEffects.Panacea = {
@@ -29,31 +27,16 @@ StatusEffects.Panacea = {
 		
 		if ent:HaveEffect("SCPCola1") then
             ent:SoftRemoveEffect("SCPCola1")
-            if ent.SCPCola1PreBuff ~= nil then
-                ent:SetRunSpeed(ent.SCPCola1PreBuff)
-            end
         elseif ent:HaveEffect("SCPCola2") then
             ent:SoftRemoveEffect("SCPCola2")
-            if ent.SCPCola1PreBuff ~= nil then
-                ent:SetRunSpeed(ent.SCPCola1PreBuff)
-            end
         elseif ent:HaveEffect("SCPCola3") then
             ent:SoftRemoveEffect("SCPCola3")
-            if ent.SCPCola1PreBuff ~= nil then
-                ent:SetRunSpeed(ent.SCPCola1PreBuff)
-            end
         end
 		
 		if ent:HaveEffect("SCPAntiCola1") then
             ent:SoftRemoveEffect("SCPAntiCola1")
-            if ent.SCPCola1PreBuff ~= nil then
-                ent:SetRunSpeed(ent.SCPCola1PreBuff)
-            end
         elseif ent:HaveEffect("SCPAntiCola2") then
             ent:SoftRemoveEffect("SCPAntiCola2")
-            if ent.SCPCola1PreBuff ~= nil then
-                ent:SetRunSpeed(ent.SCPCola1PreBuff)
-            end
         end
 		
 		if ent:HaveEffect("SCP1853") then ent:SoftRemoveEffect("SCP1853") end
@@ -61,177 +44,183 @@ StatusEffects.Panacea = {
 		ent.Consumed207 = 0
 		ent.ConsumedAnti207 = 0
 		ent.Consumed1853 = 0
-    end,
-    HookType = "",
-    HookFunction = function() end
+    end
 }
 
 StatusEffects.SCPCola1 = {
     Name = "SCP-207 Effect [Lv. 1]",
     Icon = "SEF_Icons/SCPSL207.png",
     Desc = "Harmfully increase motor skills.",
-	Type = "BUFF",
-    Effect = function(ent, time) 
-        if not ent.SCPCola1PreBuff then
-            ent.SCPCola1PreBuff = ent:GetRunSpeed()
-            ent.SCPCola1Timer = CurTime()
-        end
-        local TimeLeft = ent:GetTimeLeft("SCPCola1")
+    Type = "BUFF",
+    EffectBegin = function(ent)
 
-        if TimeLeft > 0.5 then
-            ent:SetRunSpeed(ent.SCPCola1PreBuff + (ent.SCPCola1PreBuff / 100 * 15))
-            if CurTime() >= ent.SCPCola1Timer then
-			    ent:SetHealth(math.min(ent:Health() - ( 1 * ent.Consumed207 ), ent:GetMaxHealth()))
-                ent.SCPCola1Timer = CurTime() + 1
-            end
-        else
-            ent:SetRunSpeed(ent.SCPCola1PreBuff)
-            ent.SCPCola1PreBuff = nil
-            ent.SCPCola1Timer = nil
+        local speedIncrease = EntBaseStats[ent].RunSpeed * 0.15
+
+        if ent.SCPCola1LastAdded then
+            BaseStatRemove(ent, "RunSpeed", ent.SCPCola1LastAdded)
         end
-		
-		if ent:Health() <= 0 then
+        BaseStatAdd(ent, "RunSpeed", speedIncrease)
+        ent.SCPCola1LastAdded = speedIncrease
+    end,
+    EffectEnd = function(ent)
+        if ent.SCPCola1LastAdded then
+            BaseStatRemove(ent, "RunSpeed", ent.SCPCola1LastAdded)
+            ent.SCPCola1LastAdded = nil
+        end
+    end,
+    Effect = function(ent, time)
+        if CurTime() >= (ent.SCPCola1Timer or 0) then
+            ent:SetHealth(math.max(ent:Health() - (1 * (ent.Consumed207 or 1)), 0))
+            ent.SCPCola1Timer = CurTime() + 1
+        end
+
+        if ent:Health() <= 0 then
             ent:Kill()
         end
-
-    end,
-    HookType = "",
-    HookFunction = function() end
+    end
 }
+
 
 StatusEffects.SCPCola2 = {
     Name = "SCP-207 Effect [Lv. 2]",
     Icon = "SEF_Icons/SCPSL207.png",
     Desc = "Harmfully increase motor skills.",
-	Type = "BUFF",
-    Effect = function(ent, time) 
-        if not ent.SCPCola2PreBuff then
-            ent.SCPCola2PreBuff = ent:GetRunSpeed()
-            ent.SCPCola2Timer = CurTime()
-        end
-        local TimeLeft = ent:GetTimeLeft("SCPCola2")
+    Type = "BUFF",
+    EffectBegin = function(ent)
+        local speedIncrease = EntBaseStats[ent].RunSpeed * 0.30
 
-        if TimeLeft > 0.1 then
-            ent:SetRunSpeed(ent.SCPCola1PreBuff + (ent.SCPCola1PreBuff / 100 * 30))
-            if CurTime() >= ent.SCPCola2Timer then
-                ent:SetHealth(math.min(ent:Health() - ( 1 * ent.Consumed207 ), ent:GetMaxHealth()))
-                ent.SCPCola2Timer = CurTime() + 1 
-            end
-        else
-            ent:SetRunSpeed(ent.SCPCola2PreBuff)
-            ent.SCPCola2PreBuff = nil
-            ent.SCPCola2Timer = nil
+        if ent.SCPCola2LastAdded then
+            BaseStatRemove(ent, "RunSpeed", ent.SCPCola2LastAdded)
         end
-		
-		if ent:Health() <= 0 then
+
+        BaseStatAdd(ent, "RunSpeed", speedIncrease)
+        ent.SCPCola2LastAdded = speedIncrease
+    end,
+    EffectEnd = function(ent)
+        if ent.SCPCola2LastAdded then
+            BaseStatRemove(ent, "RunSpeed", ent.SCPCola2LastAdded)
+            ent.SCPCola2LastAdded = nil
+        end
+    end,
+    Effect = function(ent, time)
+        if CurTime() >= (ent.SCPCola2Timer or 0) then
+            ent:SetHealth(math.max(ent:Health() - (1 * (ent.Consumed207 or 1)), 0))
+            ent.SCPCola2Timer = CurTime() + 1
+        end
+
+        if ent:Health() <= 0 then
             ent:Kill()
         end
-
-    end,
-    HookType = "",
-    HookFunction = function() end
+    end
 }
+
 
 StatusEffects.SCPCola3 = {
     Name = "SCP-207 Effect [Lv. 3]",
     Icon = "SEF_Icons/SCPSL207.png",
     Desc = "Harmfully increase motor skills.",
-	Type = "BUFF",
-    Effect = function(ent, time) 
-        if not ent.SCPCola3PreBuff then
-            ent.SCPCola3PreBuff = ent:GetRunSpeed()
-            ent.SCPCola3Timer = CurTime()
-        end
-        local TimeLeft = ent:GetTimeLeft("SCPCola3")
+    Type = "BUFF",
+    EffectBegin = function(ent)
+        local speedIncrease = EntBaseStats[ent].RunSpeed * 0.45
 
-        if TimeLeft > 0.1 then
-            ent:SetRunSpeed(ent.SCPCola1PreBuff + (ent.SCPCola1PreBuff / 100 * 45))
-            if CurTime() >= ent.SCPCola3Timer then
-                ent:SetHealth(math.min(ent:Health() - ( 1 * ent.Consumed207 ), ent:GetMaxHealth()))
-                ent.SCPCola3Timer = CurTime() + 1 
-            end
-        else
-            ent:SetRunSpeed(ent.SCPCola3PreBuff)
-            ent.SCPCola3PreBuff = nil
-            ent.SCPCola3Timer = nil
+        if ent.SCPCola3LastAdded then
+            BaseStatRemove(ent, "RunSpeed", ent.SCPCola3LastAdded)
         end
-		
-		if ent:Health() <= 0 then
+
+        BaseStatAdd(ent, "RunSpeed", speedIncrease)
+        ent.SCPCola3LastAdded = speedIncrease
+    end,
+    EffectEnd = function(ent)
+        if ent.SCPCola3LastAdded then
+            BaseStatRemove(ent, "RunSpeed", ent.SCPCola3LastAdded)
+            ent.SCPCola3LastAdded = nil
+        end
+    end,
+    Effect = function(ent, time)
+        if CurTime() >= (ent.SCPCola3Timer or 0) then
+            ent:SetHealth(math.max(ent:Health() - (1 * (ent.Consumed207 or 1)), 0))
+            ent.SCPCola3Timer = CurTime() + 1
+        end
+
+        if ent:Health() <= 0 then
             ent:Kill()
         end
-
-    end,
-    HookType = "",
-    HookFunction = function() end
+    end
 }
 
+
+-- Anti SCP-207 Effect [Lv. 1]
 StatusEffects.SCPAntiCola1 = {
     Name = "Anti SCP-207 Effect [Lv. 1]",
     Icon = "SEF_Icons/SCPSL207Anti.png",
     Desc = "Good for your health, bad for your motor skills. Will save your life in a pinch.",
-	Type = "BUFF",
-    Effect = function(ent, time) 
-        if not ent.SCPAntiCola1PreBuff then
-            ent.SCPAntiCola1PreBuff = ent:GetRunSpeed()
-            ent.SCPAntiCola1Timer = CurTime()
-        end
-        local TimeLeft = ent:GetTimeLeft("SCPAntiCola1")
+    Type = "BUFF",
+    EffectBegin = function(ent)
+        local speedDecrease = EntBaseStats[ent].RunSpeed * 0.05
 
-        if TimeLeft > 0.5 then
-            ent:SetRunSpeed(ent.SCPAntiCola1PreBuff - (ent.SCPAntiCola1PreBuff / 100 * 5 ))
-            if CurTime() >= ent.SCPAntiCola1Timer then
-                ent:SetHealth(math.min(ent:Health() + 1, ent:GetMaxHealth()))
-                ent.SCPAntiCola1Timer = CurTime() + 1
-            end
-
-            if ent:Health() <= 1 then
-                ent:RemoveEffect("SCPAntiCola1")
-                ent:ApplyEffect("SCPAntiColaImmunity", 3)
-            end
-        else
-            ent:SetRunSpeed(ent.SCPAntiCola1PreBuff)
-            ent.SCPAntiCola1PreBuff = nil
-            ent.SCPAntiCola1Timer = nil
+        if ent.SCPAntiCola1LastAdded then
+            BaseStatAdd(ent, "RunSpeed", ent.SCPAntiCola1LastAdded)
         end
 
+        BaseStatRemove(ent, "RunSpeed", speedDecrease)
+        ent.SCPAntiCola1LastAdded = speedDecrease
     end,
-    HookType = "",
-    HookFunction = function() end
+    EffectEnd = function(ent)
+        if ent.SCPAntiCola1LastAdded then
+            BaseStatAdd(ent, "RunSpeed", ent.SCPAntiCola1LastAdded)
+            ent.SCPAntiCola1LastAdded = nil
+        end
+    end,
+    Effect = function(ent, time)
+        if CurTime() >= (ent.SCPAntiCola1Timer or 0) then
+            ent:SetHealth(math.min(ent:Health() + 1, ent:GetMaxHealth()))
+            ent.SCPAntiCola1Timer = CurTime() + 1
+        end
+
+        if ent:Health() <= 1 then
+            ent:SoftRemoveEffect("SCPAntiCola1")
+            ent:ApplyEffect("SCPAntiColaImmunity", 3)
+        end
+    end
 }
 
 StatusEffects.SCPAntiCola2 = {
     Name = "Anti SCP-207 Effect [Lv. 2]",
     Icon = "SEF_Icons/SCPSL207Anti.png",
     Desc = "Good for your health, bad for your motor skills. Will save your life in a pinch.",
-	Type = "BUFF",
-    Effect = function(ent, time) 
-        if not ent.SCPAntiCola2PreBuff then
-            ent.SCPAntiCola2PreBuff = ent:GetRunSpeed()
-            ent.SCPAntiCola2Timer = CurTime()
-        end
-        local TimeLeft = ent:GetTimeLeft("SCPAntiCola2")
+    Type = "BUFF",
+    EffectBegin = function(ent)
+        local speedDecrease = EntBaseStats[ent].RunSpeed * 0.15
 
-        if TimeLeft > 0.5 then
-            ent:SetRunSpeed(ent.SCPAntiCola1PreBuff - (ent.SCPAntiCola1PreBuff / 100 * 15 ))
-            if CurTime() >= ent.SCPAntiCola2Timer then
-                ent:SetHealth(math.min(ent:Health() + 3, ent:GetMaxHealth()))
-                ent.SCPAntiCola2Timer = CurTime() + 1 
-            end 
-            if ent:Health() <= 1 then
-                ent:SoftRemoveEffect("SCPAntiCola2")
-                ent:ApplyEffect("SCPAntiColaImmunity", 3)
-            end
-
-        else
-            ent:SetRunSpeed(ent.SCPAntiCola2PreBuff)
-            ent.SCPAntiCola2PreBuff = nil
-            ent.SCPAntiCola2Timer = nil
+        if ent.SCPAntiCola2LastAdded then
+            BaseStatAdd(ent, "RunSpeed", ent.SCPAntiCola2LastAdded)
         end
 
+        BaseStatRemove(ent, "RunSpeed", speedDecrease)
+        ent.SCPAntiCola2LastAdded = speedDecrease
     end,
-    HookType = "",
-    HookFunction = function() end
+    EffectEnd = function(ent)
+        if ent.SCPAntiCola2LastAdded then
+            BaseStatAdd(ent, "RunSpeed", ent.SCPAntiCola2LastAdded)
+            ent.SCPAntiCola2LastAdded = nil
+        end
+    end,
+    Effect = function(ent, time)
+        if CurTime() >= (ent.SCPAntiCola2Timer or 0) then
+            ent:SetHealth(math.min(ent:Health() + 3, ent:GetMaxHealth()))
+            ent.SCPAntiCola2Timer = CurTime() + 1
+        end
+
+        if ent:Health() <= 1 then
+            ent:SoftRemoveEffect("SCPAntiCola2")
+            ent:ApplyEffect("SCPAntiColaImmunity", 3)
+        end
+    end
 }
+
+
+
+
 
 StatusEffects.SCPAntiColaImmunity = {
     Name = "Anti SCP-207 Immunity",
@@ -246,14 +235,19 @@ StatusEffects.SCPAntiColaImmunity = {
         
         local TimeLeft = ent:GetTimeLeft("SCPAntiColaImmunity")
 
-        if TimeLeft < 0.01 then
+        if TimeLeft < 0.1 then
             ent.SCPAntiColaSaved = nil
         end
     end,
-    HookType = "EntityTakeDamage",
-    HookFunction = function(target, dmginfo) 
-        if IsValid(target) and target:HaveEffect("SCPAntiColaImmunity") then
-            dmginfo:SetDamage(0)
-        end
-    end
+    ServerHooks = {
+        {
+            HookType = "EntityTakeDamage",
+            HookFunction = function(target, dmginfo) 
+                if IsValid(target) and target:HaveEffect("SCPAntiColaImmunity") then
+                    dmginfo:SetDamage(0)
+                end
+            end
+
+        }
+    }
 }
