@@ -14,7 +14,7 @@ SWEP.Purpose = [[
 Provides 40 Temporary Armor
 Grants +40 Units of Movespeed
 ]]
-SWEP.Category = "SCP"
+SWEP.Category = "SCP: SL"
 
 SWEP.ViewModelFOV = 65
 SWEP.ViewModel = "models/weapons/sweps/scpsl/injector/v_injector.mdl"
@@ -105,7 +105,33 @@ function SWEP:PrimaryAttack()
 	self.InitializeHealing = 1
 	self.Idle = 1
 end
+
 function SWEP:SecondaryAttack()
+    if self.InitializeHealing == 1 then
+	    self.InitializeHealing = 0
+		self:SetNextPrimaryFire(CurTime() + 0)
+		self:Deploy()
+	else
+        local owner = self:GetOwner()
+        local startPos = owner:GetShootPos()
+        local aimVec = owner:GetAimVector()
+        local endPos = startPos + (aimVec * 110)
+
+        local trace = util.TraceLine({
+            start = startPos,
+            endpos = endPos,
+            filter = owner
+        })
+        if trace.HitPos then
+            local ENT = ents.Create("weapon_scpsl_injector")
+            if IsValid(ENT) then
+                ENT:SetPos(trace.HitPos + trace.HitNormal * 5)
+                ENT:Spawn()
+            end
+        end
+	    owner:RemoveAmmo(1, "injector")
+	    if owner:GetAmmoCount(self.Primary.Ammo) == 0 then owner:StripWeapon("weapon_scpsl_injector") end -- Reminder
+	end
 end
 
 function SWEP:Think()

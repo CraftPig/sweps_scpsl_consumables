@@ -11,7 +11,7 @@ end
 SWEP.PrintName = "SCP 500"
 SWEP.Author = "Craft_Pig"
 SWEP.Purpose = "The Panacea. Instantly restores all health and cures most afflictions."
-SWEP.Category = "SCP"
+SWEP.Category = "SCP: SL"
 
 SWEP.ViewModelFOV = 65
 SWEP.ViewModel = "models/weapons/sweps/scpsl/500/v_500.mdl"
@@ -115,7 +115,33 @@ function SWEP:PrimaryAttack()
 	self.InitializeHealing = 1
 	self.Idle = 1
 end
+
 function SWEP:SecondaryAttack()
+    if self.InitializeHealing == 1 then
+	    self.InitializeHealing = 0
+		self:SetNextPrimaryFire(CurTime() + 0)
+		self:Deploy()
+	else
+        local owner = self:GetOwner()
+        local startPos = owner:GetShootPos()
+        local aimVec = owner:GetAimVector()
+        local endPos = startPos + (aimVec * 110)
+
+        local trace = util.TraceLine({
+            start = startPos,
+            endpos = endPos,
+            filter = owner
+        })
+        if trace.HitPos then
+            local ENT = ents.Create("weapon_scpsl_500")
+            if IsValid(ENT) then
+                ENT:SetPos(trace.HitPos + trace.HitNormal * 5)
+                ENT:Spawn()
+            end
+        end
+	    owner:RemoveAmmo(1, "scp-500")
+	    if owner:GetAmmoCount(self.Primary.Ammo) == 0 then owner:StripWeapon("weapon_scpsl_500") end -- Reminder
+	end
 end
 
 function SWEP:Think()
@@ -153,9 +179,6 @@ end
 
     -- return pos, ang, fov
 -- end
-
-function SWEP:SecondaryAttack()
-end
 
 if CLIENT then
 	local WorldModel = ClientsideModel(SWEP.WorldModel)

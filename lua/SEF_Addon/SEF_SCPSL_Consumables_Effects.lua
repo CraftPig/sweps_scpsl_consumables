@@ -74,7 +74,7 @@ StatusEffects.SCPCola1 = {
             ent.SCPCola1Timer = CurTime() + 1
         end
 
-        if ent:Health() <= 0 then
+        if ent:Alive() and ent:Health() <= 0 then
             ent:Kill()
         end
     end
@@ -108,7 +108,7 @@ StatusEffects.SCPCola2 = {
             ent.SCPCola2Timer = CurTime() + 1
         end
 
-        if ent:Health() <= 0 then
+        if ent:Alive() and ent:Health() <= 0 then
             ent:Kill()
         end
     end
@@ -142,7 +142,7 @@ StatusEffects.SCPCola3 = {
             ent.SCPCola3Timer = CurTime() + 1
         end
 
-        if ent:Health() <= 0 then
+        if ent:Alive() and ent:Health() <= 0 then
             ent:Kill()
         end
     end
@@ -218,36 +218,32 @@ StatusEffects.SCPAntiCola2 = {
     end
 }
 
-
-
-
-
-StatusEffects.SCPAntiColaImmunity = {
-    Name = "Anti SCP-207 Immunity",
-    Icon = "SEF_Icons/SCPSL207Anti.png",
-    Desc = "You are saved... for now...",
-	Type = "BUFF",
-    Effect = function(ent, time)
-        if not ent.SCPAntiColaSaved then
-            ent:SetHealth(1)
-            ent.SCPAntiColaSaved = true
-        end
+-- StatusEffects.SCPAntiColaImmunity = {
+    -- Name = "Anti SCP-207 Immunity",
+    -- Icon = "SEF_Icons/SCPSL207Anti.png",
+    -- Desc = "You are saved... for now...",
+	-- Type = "BUFF",
+    -- Effect = function(ent, time)
+        -- if not ent.SCPAntiColaSaved then
+            -- ent:SetHealth(1)
+            -- ent.SCPAntiColaSaved = true
+        -- end
         
-        local TimeLeft = ent:GetTimeLeft("SCPAntiColaImmunity")
+        -- local TimeLeft = ent:GetTimeLeft("SCPAntiColaImmunity")
 
-        if TimeLeft < 0.1 then
-            ent.SCPAntiColaSaved = nil
-        end
-    end,
-    ServerHooks = {
-        {
-            HookType = "EntityTakeDamage",
-            HookFunction = function(target, dmginfo) 
-                if IsValid(target) and target:HaveEffect("SCPAntiColaImmunity") then
-                    dmginfo:SetDamage(0)
-                end
-            end
+        -- if TimeLeft < 0.1 then
+            -- ent.SCPAntiColaSaved = nil
+        -- end
+    -- end,
+    -- ServerHooks = {
+        -- {
+            -- HookType = "EntityTakeDamage",
+            -- HookFunction = function(target, dmginfo) 
+                -- if IsValid(target) and target:HaveEffect("SCPAntiColaImmunity") then
+                    -- dmginfo:SetDamage(0)
+                -- end
+            -- end
 
-        }
-    }
-}
+        -- }
+    -- }
+-- }

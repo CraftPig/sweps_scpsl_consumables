@@ -11,7 +11,7 @@ end
 SWEP.PrintName = "SCP Anti 207"
 SWEP.Author = "Craft_Pig"
 SWEP.Purpose = "Good for your health, bad for your motor skills."
-SWEP.Category = "SCP"
+SWEP.Category = "SCP: SL"
 
 SWEP.ViewModelFOV = 65
 SWEP.ViewModel = "models/weapons/sweps/scpsl/207/v_anti207.mdl"
@@ -123,6 +123,31 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:SecondaryAttack()
+    if self.InitializeHealing == 1 then
+	    self.InitializeHealing = 0
+		self:SetNextPrimaryFire(CurTime() + 0)
+		self:Deploy()
+	else
+        local owner = self:GetOwner()
+        local startPos = owner:GetShootPos()
+        local aimVec = owner:GetAimVector()
+        local endPos = startPos + (aimVec * 110)
+
+        local trace = util.TraceLine({
+            start = startPos,
+            endpos = endPos,
+            filter = owner
+        })
+        if trace.HitPos then
+            local ENT = ents.Create("weapon_scpsl_anti207")
+            if IsValid(ENT) then
+                ENT:SetPos(trace.HitPos + trace.HitNormal * 5)
+                ENT:Spawn()
+            end
+        end
+	    owner:RemoveAmmo(1, "scp-207")
+	    if owner:GetAmmoCount(self.Primary.Ammo) == 0 then owner:StripWeapon("weapon_scpsl_anti207") end -- Reminder
+	end
 end
 
 function SWEP:Think()
@@ -138,9 +163,6 @@ function SWEP:Think()
 			if InitializeSEF == true then ApplyAnti207Buff(owner, swep) end
 		end
 	end
-end
-
-function SWEP:SecondaryAttack()
 end
 
 function SWEP:PostDrawViewModel( vm )
