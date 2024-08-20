@@ -11,7 +11,7 @@ end
 SWEP.PrintName = "SCP 330 Candies"
 SWEP.Author = "Craft_Pig"
 SWEP.Purpose = "A bag of candies that apply random buffs."
-SWEP.Category = "SCP"
+SWEP.Category = "SCP: SL"
 
 SWEP.ViewModelFOV = 65
 SWEP.ViewModel = "models/weapons/sweps/scpsl/330/v_330.mdl"
@@ -82,6 +82,9 @@ function SWEP:PrimaryAttack()
     self:SetNextPrimaryFire(CurTime() + self.IdleTimer) -- Prevent Primary fire
 	
 	SetCandy = math.random(1, 100)
+end
+
+function SWEP:SecondaryAttack()
 end
 
 local function Heal(owner, weapon)

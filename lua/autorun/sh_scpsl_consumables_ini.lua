@@ -72,7 +72,7 @@ sound.Add( {
 
 sound.Add( {
     name = "scpsl_medkit_equip",
-    channel = CHAN_STATIC,
+    channel = CHAN_WEAPON,
     volume = 1.0,
     level = 65,
     pitch = {95, 115},
@@ -102,7 +102,7 @@ sound.Add( {
 } )
 sound.Add( {
     name = "scpsl_medkit_use_03",
-    channel = CHAN_WEAPON,
+    channel = CHAN_STATIC,
     volume = 1.0,
     level = 65,
     pitch = {105, 105},
@@ -187,7 +187,7 @@ sound.Add( {
 
 sound.Add( {
     name = "scpsl_207_equip",
-    channel = CHAN_STATIC,
+    channel = CHAN_WEAPON,
     volume = 1.0,
     level = 65,
     pitch = {95, 115},
