@@ -63,6 +63,8 @@ function SWEP:Deploy()
 	-- self:SetNextPrimaryFire(CurTime() + self.Owner:GetViewModel():SequenceDuration())
 	
 	if owner:GetAmmoCount(self.Primary.Ammo) == 0 then owner:StripWeapon("weapon_scpsl_injector") end
+	
+	return true
 end
 
 local function Heal(owner, weapon)
