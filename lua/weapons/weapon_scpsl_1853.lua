@@ -163,11 +163,11 @@ if CLIENT then -- Worldmodel offset
 	end
 end
 
-function SWEP:Holster()
+-- function SWEP:Holster()
     -- hook.Remove("PlayerDeath", "DMGBuff")
 	
-	return true
-end
+	-- return true
+-- end
 
 -- if CLIENT then
     -- owner:ChatPrint("You have consumed SCP-1853.")

@@ -193,10 +193,6 @@ if CLIENT then
 	end
 end
 
-function SWEP:Holster()
-	return true
-end
-
 	    -- if ( IsValid(owner) && SERVER ) then 
 			
 			-- Heal(owner, self)
