@@ -4,7 +4,7 @@ if CLIENT then
     SWEP.DrawWeaponInfoBox = true
 end
 
-SWEP.PrintName = "Medkit (Green)"
+SWEP.PrintName = "Endurance Kit"
 SWEP.Author = "Craft_Pig"
 SWEP.Purpose = [[
 Heals 10hp
@@ -70,6 +70,8 @@ function SWEP:Deploy()
 	-- self:SetNextPrimaryFire(CurTime() + self.Owner:GetViewModel():SequenceDuration())
 	
 	if owner:GetAmmoCount(self.Primary.Ammo) == 0 then owner:StripWeapon("weapon_scpsl_medkit_green") end -- Reminder
+	
+	return true
 end
 
 local function Heal(owner, weapon)
@@ -107,6 +109,7 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:SecondaryAttack()
+    if CLIENT then return end
     if self.InitializeHealing == 1 then
 	    self.InitializeHealing = 0
 		self:SetNextPrimaryFire(CurTime() + 0)

@@ -52,7 +52,7 @@ end
 
 function SWEP:Deploy()
     local owner = self:GetOwner() 
-
+	
     self:SendWeaponAnim(ACT_VM_DRAW)
     self.IdleTimer = CurTime() + self.Owner:GetViewModel():SequenceDuration()
 	self.Idle = 0
@@ -63,14 +63,25 @@ function SWEP:Deploy()
         if IsValid(self) and IsValid(self.Owner) then
             local vm = self.Owner:GetViewModel()
             if IsValid(vm) then
-                vm:SetSkin(0) -- Change this to 1 if you want the second texture group
+                vm:SetSkin(0) 
             end
         end
     end)
 
 	-- self:SetNextPrimaryFire(CurTime() + self.Owner:GetViewModel():SequenceDuration())
 	
+	-- local PrevWeapon = owner:GetPreviousWeapon()
+	
+	-- print(owner:GetPreviousWeapon())
+
+    -- if not self:HasAmmo() then
+        -- if PrevWeapon:IsWeapon() then
+            -- owner:SetActiveWeapon(PrevWeapon)
+        -- end
+    -- end
+	
 	if owner:GetAmmoCount(self.Primary.Ammo) == 0 then owner:StripWeapon("weapon_scpsl_medkit") end -- Reminder
+	return true
 end
 
 local function Heal(owner, weapon)
@@ -107,6 +118,7 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:SecondaryAttack()
+    if CLIENT then return end
     if self.InitializeHealing == 1 then
 	    self.InitializeHealing = 0
 		self:SetNextPrimaryFire(CurTime() + 0)

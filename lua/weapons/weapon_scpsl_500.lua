@@ -65,6 +65,8 @@ function SWEP:Deploy()
 	-- self:SetNextPrimaryFire(CurTime() + self.Owner:GetViewModel():SequenceDuration())
 	
 	if owner:GetAmmoCount(self.Primary.Ammo) == 0 then owner:StripWeapon("weapon_scpsl_500") end -- Reminder
+	
+	return true
 end
 
 local function Heal(owner, weapon)
@@ -81,13 +83,9 @@ local function Heal(owner, weapon)
                 owner:SetArmor(math.min(owner:GetMaxArmor(), owner:Armor() + ArmorAmount))
 			end
 			
-			if ( owner.Consumed1853 == 1 or owner.Consumed207 > 0 or owner.ConsumedAnti207 > 0 or owner.HasDrinkSCP207 == true ) then
-			    if owner.Consumed1853 == 1 then owner:ChatPrint("Cured SCP 1853's effects") end
-				if owner.Consumed207 ~= 0 or owner.HasDrinkSCP207 == true then owner:ChatPrint("Cured SCP 207's effects") end
-				if owner.ConsumedAnti207 ~= 0 then owner:ChatPrint("Cured SCP Anti-207's effects") end
-				hook.Run("ResetBuffsSCPSL", owner)
-				owner:EmitSound("scpsl_cooldown")
-			end
+			if owner:HaveEffect("SCP1853") then owner:ChatPrint("Cured SCP 1853's effects") end
+			if owner:HaveEffect("SCPCola1") or owner:HaveEffect("SCPCola1") or owner:HaveEffect("SCPCola3") then owner:ChatPrint("Cured SCP 207's effects") end
+			if owner:HaveEffect("SCPAntiCola1") or owner:HaveEffect("SCPAntiCola2") then owner:ChatPrint("Cured SCP Anti 207's effects") end
 			owner:RemoveAmmo(1, "scp-500") -- Reminder
 			weapon:Deploy()
         end
@@ -117,6 +115,7 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:SecondaryAttack()
+    if CLIENT then return end
     if self.InitializeHealing == 1 then
 	    self.InitializeHealing = 0
 		self:SetNextPrimaryFire(CurTime() + 0)

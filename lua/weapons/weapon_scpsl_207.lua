@@ -62,6 +62,8 @@ function SWEP:Deploy()
 	-- self:SetNextPrimaryFire(CurTime() + self.Owner:GetViewModel():SequenceDuration())
 	
 	if owner:GetAmmoCount(self.Primary.Ammo) == 0 then owner:StripWeapon("weapon_scpsl_207") end -- Reminder
+	
+	return true
 end
 
 local function Heal(owner, weapon)
@@ -78,44 +80,7 @@ local function Heal(owner, weapon)
     end
 end
 
--- function Apply207Buff(owner, swep)
-    -- if owner.Consumed207 >= 3 then return end
-	
-	-- owner.Consumed207 = owner.Consumed207 + 1
-	
-	-- if not owner:HaveEffect("SCPCola1") and not owner:HaveEffect("SCPCola2") and not owner:HaveEffect("SCPCola3") then
-        -- owner:ApplyEffect("SCPCola1", math.huge)
-    -- elseif owner:HaveEffect("SCPCola1") then
-        -- owner:ApplyEffect("SCPCola2", math.huge)
-        -- owner:SoftRemoveEffect("SCPCola1")
-    -- elseif owner:HaveEffect("SCPCola2") then
-        -- owner:ApplyEffect("SCPCola3", math.huge)
-        -- owner:SoftRemoveEffect("SCPCola2")
-    -- end
-	
-	-- if owner.Consumed207 ~= 0 then
-		-- local explosionPos = owner:GetPos()
-                
-        -- local effectData = EffectData()
-        -- effectData:SetOrigin(explosionPos)
-        -- effectData:SetScale(1) -- Scale of the explosion
-        -- effectData:SetRadius(300) -- Explosion radius
-        -- effectData:SetMagnitude(100) -- Explosion magnitude
-        -- util.Effect("HelicopterMegaBomb", effectData, true, true)
-
-        -- owner:EmitSound("BaseExplosionEffect.Sound", 100, 100)
-
-        
-		
-		-- if owner:Alive() then  owner:Kill() end 
-	-- end
--- end
-
 function Apply207Buff(owner, swep)
-    if owner.Consumed207 >= 3 then return end
-	
-	owner.Consumed207 = owner.Consumed207 + 1
-	
 	if not owner:HaveEffect("SCPCola1") and not owner:HaveEffect("SCPCola2") and not owner:HaveEffect("SCPCola3") then
         owner:ApplyEffect("SCPCola1", math.huge)
     elseif owner:HaveEffect("SCPCola1") then
@@ -126,7 +91,7 @@ function Apply207Buff(owner, swep)
         owner:SoftRemoveEffect("SCPCola2")
     end
 	
-	if owner.ConsumedAnti207 ~= 0 then
+	if owner:HaveEffect("SCPAntiCola1") or owner:HaveEffect("SCPAntiCola2") then
 		local explosionPos = owner:GetPos()
                 
         local effectData = EffectData()
@@ -160,6 +125,7 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:SecondaryAttack()
+    if CLIENT then return end
     if self.InitializeHealing == 1 then
 	    self.InitializeHealing = 0
 		self:SetNextPrimaryFire(CurTime() + 0)

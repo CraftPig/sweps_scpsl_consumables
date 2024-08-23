@@ -64,6 +64,8 @@ function SWEP:Deploy()
 	-- self:SetNextPrimaryFire(CurTime() + self.Owner:GetViewModel():SequenceDuration())
 	
 	if owner:GetAmmoCount(self.Primary.Ammo) == 0 then owner:StripWeapon("weapon_scpsl_painkillers") end -- Reminder
+	
+	return true
 end
 
 local function Heal(owner, weapon)
@@ -107,6 +109,7 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:SecondaryAttack()
+    if CLIENT then return end
     if self.InitializeHealing == 1 then
 	    self.InitializeHealing = 0
 		self:SetNextPrimaryFire(CurTime() + 0)
@@ -115,7 +118,7 @@ function SWEP:SecondaryAttack()
         local owner = self:GetOwner()
         local startPos = owner:GetShootPos()
         local aimVec = owner:GetAimVector()
-        local endPos = startPos + (aimVec * 110)
+        local endPos = startPos + (aimVec * 130)
 
         local trace = util.TraceLine({
             start = startPos,

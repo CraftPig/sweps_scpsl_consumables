@@ -52,6 +52,8 @@ function SWEP:Deploy()
 	-- self:SetNextPrimaryFire(CurTime() + self.Owner:GetViewModel():SequenceDuration())
 	
 	if owner:GetAmmoCount(self.Primary.Ammo) == 0 then owner:StripWeapon("weapon_scpsl_1853") end -- Reminder
+	
+	return true
 end
 
 local function Heal(owner, weapon)
@@ -69,12 +71,12 @@ local function Heal(owner, weapon)
 end
 
 function Apply1853Buff(owner, swep)
-    if owner.Consumed1853 == 1 then return end
+    -- if owner.Consumed1853 == 1 then return end
 	if SERVER then owner:ApplyEffect("SCP1853", math.huge) end 
-	if owner.Consumed207 == 0 and owner.Consumed1853 == 0 and owner.ConsumedAnti207 == 0 then
-	    owner.DefaultJumpHeightSCPSL = owner:GetJumpPower()  
-        owner.DefaultRunSpeedSCPSL = owner:GetRunSpeed()
-	end
+	-- if owner.Consumed207 == 0 and owner.Consumed1853 == 0 and owner.ConsumedAnti207 == 0 then
+	    -- owner.DefaultJumpHeightSCPSL = owner:GetJumpPower()  
+        -- owner.DefaultRunSpeedSCPSL = owner:GetRunSpeed()
+	-- end
 end
 
 function SWEP:PrimaryAttack()
@@ -94,6 +96,7 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:SecondaryAttack()
+    if CLIENT then return end
     if self.InitializeHealing == 1 then
 	    self.InitializeHealing = 0
 		self:SetNextPrimaryFire(CurTime() + 0)

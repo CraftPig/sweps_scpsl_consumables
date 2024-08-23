@@ -66,6 +66,7 @@ function SWEP:Deploy()
 	end
 
 	-- if owner:GetAmmoCount(self.Primary.Ammo) == 0 then return end
+	return true
 end
 
 function SWEP:PrimaryAttack()

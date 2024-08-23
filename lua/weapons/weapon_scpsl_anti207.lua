@@ -61,6 +61,8 @@ function SWEP:Deploy()
 	-- self:SetNextPrimaryFire(CurTime() + self.Owner:GetViewModel():SequenceDuration())
 	
 	if owner:GetAmmoCount(self.Primary.Ammo) == 0 then owner:StripWeapon("weapon_scpsl_anti207") end -- Reminder
+	
+	return true
 end
 
 local function Heal(owner, weapon)
@@ -78,9 +80,9 @@ local function Heal(owner, weapon)
 end
 
 function ApplyAnti207Buff(owner, swep)
-    if owner.ConsumedAnti207 == 2 then return end
+    -- if owner.ConsumedAnti207 == 2 then return end
 	
-	owner.ConsumedAnti207 = owner.ConsumedAnti207 + 1
+	-- owner.ConsumedAnti207 = owner.ConsumedAnti207 + 1
 	
 	if not owner:HaveEffect("SCPAntiCola1") and not owner:HaveEffect("SCPAntiCola2")then
         owner:ApplyEffect("SCPAntiCola1", math.huge)
@@ -89,7 +91,7 @@ function ApplyAnti207Buff(owner, swep)
         owner:SoftRemoveEffect("SCPAntiCola1")
     end
 	
-	if owner.Consumed207 ~= 0 then
+	if owner:HaveEffect("SCPCola1") or owner:HaveEffect("SCPCola1") or owner:HaveEffect("SCPCola3") then
 		local explosionPos = owner:GetPos()
                 
         local effectData = EffectData()
@@ -123,6 +125,7 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:SecondaryAttack()
+    if CLIENT then return end
     if self.InitializeHealing == 1 then
 	    self.InitializeHealing = 0
 		self:SetNextPrimaryFire(CurTime() + 0)

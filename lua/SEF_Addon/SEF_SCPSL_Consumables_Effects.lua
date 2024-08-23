@@ -7,10 +7,60 @@ StatusEffects.SCP1853 = {
     Name = "SCP-1853",
     Icon = "SEF_Icons/SCPSL1853.png",
     Desc = "Increases motor skills when in danger.",
-	Type = "BUFF",
-    Effect = function(ent, time)   
-        ent.Consumed1853 = 1
-    end
+    Type = "BUFF",
+    Effect = function(ent, time)
+        if not ent.Consumed1853 or ent.Consumed1853 == 0 then
+            ent.Consumed1853 = 1
+            ent.StackDepleteTime = 20
+            ent.Danger1853Stacks = 0
+            ent.Danger1853Timer = CurTime() 
+			ent.LastDamageTimer = CurTime() + 5
+			ent.TotalDamage = 0
+        end
+
+        if ent.Consumed1853 == 1 then
+            if ent.Danger1853Stacks >= 5 then
+                ent:StartLoopingSound("scpsl_1853_heartbeat")
+            end
+
+            if ent.Danger1853Timer <= CurTime() then
+                if ent.Danger1853Stacks > 0 then
+                    ent:EmitSound("scpsl_1853_dangerdec")
+                end
+                ent.Danger1853Stacks = math.max(0, ent.Danger1853Stacks - 1)
+                ent.Danger1853Timer = CurTime() + ent.StackDepleteTime
+
+                if ent.Danger1853Stacks > 0 then
+                    ent:ApplyEffect("Haste", 20, (20 * ent.Danger1853Stacks), 1)
+                end
+            end
+        end
+
+        if ent:HaveEffect("SCPCola1") then
+            ent:ApplyEffect("Poison", 1, 8, nil, 5)
+        end
+    end,
+    ServerHooks = {
+        {
+            HookType = "EntityTakeDamage",
+            HookFunction = function(ent, dmginfo)
+                if ent:HaveEffect("SCP1853") then
+				    
+					ent.TotalDamage = ent.TotalDamage + dmginfo:GetDamage()
+					ent.LastDamageTimer = CurTime() + 5
+		            if ent.LastDamageTimer <= CurTime() then
+		                ent.TotalDamage = 0 
+		            end
+                    if dmginfo:GetDamage() >= 10 or ent.TotalDamage >= 20 then
+					    ent.TotalDamage = 0 
+                        ent.Danger1853Stacks = math.min(ent.Danger1853Stacks + 1, 5)
+                        ent:ApplyEffect("Haste", 20, (20 * ent.Danger1853Stacks), 1)
+						ent:EmitSound("scpsl_1853_dangerinc")	
+                    end
+                end
+            end
+        }
+    },
 }
 
 StatusEffects.Panacea = {
@@ -104,7 +154,7 @@ StatusEffects.SCPCola2 = {
     end,
     Effect = function(ent, time)
         if CurTime() >= (ent.SCPCola2Timer or 0) then
-            ent:SetHealth(math.max(ent:Health() - (1 * (ent.Consumed207 or 1)), 0))
+            ent:SetHealth(math.max(ent:Health() - (2)))
             ent.SCPCola2Timer = CurTime() + 1
         end
 
@@ -138,7 +188,7 @@ StatusEffects.SCPCola3 = {
     end,
     Effect = function(ent, time)
         if CurTime() >= (ent.SCPCola3Timer or 0) then
-            ent:SetHealth(math.max(ent:Health() - (1 * (ent.Consumed207 or 1)), 0))
+            ent:SetHealth(math.max(ent:Health() - (3)))
             ent.SCPCola3Timer = CurTime() + 1
         end
 

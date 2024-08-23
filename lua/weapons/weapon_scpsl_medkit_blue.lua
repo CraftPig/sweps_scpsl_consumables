@@ -4,7 +4,7 @@ if CLIENT then
     SWEP.DrawWeaponInfoBox = true
 end
 
-SWEP.PrintName = "Medkit (Blue)"
+SWEP.PrintName = "Charger Kit"
 SWEP.Author = "Craft_Pig"
 SWEP.Purpose = [[
 Regenerates 30 Health and Armor over 5 seconds.
@@ -70,6 +70,8 @@ function SWEP:Deploy()
 	-- self:SetNextPrimaryFire(CurTime() + self.Owner:GetViewModel():SequenceDuration())
 	
 	if owner:GetAmmoCount(self.Primary.Ammo) == 0 then owner:StripWeapon("weapon_scpsl_medkit_blue") end -- Reminder
+	
+	return true
 end
 
 local function Heal(owner, weapon)
@@ -106,6 +108,7 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:SecondaryAttack()
+    if CLIENT then return end
     if self.InitializeHealing == 1 then
 	    self.InitializeHealing = 0
 		self:SetNextPrimaryFire(CurTime() + 0)

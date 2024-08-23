@@ -3,12 +3,12 @@ if SERVER then
 end
 
 if CLIENT then 
-    SWEP.WepSelectIcon = surface.GetTextureID( "vgui/hud/injector" )
+    SWEP.WepSelectIcon = surface.GetTextureID( "vgui/hud/injector_blue" )
 	SWEP.BounceWeaponIcon = true 
     SWEP.DrawWeaponInfoBox = true
 end
 
-SWEP.PrintName = "Adrenaline"
+SWEP.PrintName = "Mend Shot"
 SWEP.Author = "Craft_Pig"
 SWEP.Purpose = [[
 Provides 40 Temporary Armor
@@ -66,12 +66,12 @@ function SWEP:Deploy()
         if IsValid(self) and IsValid(self.Owner) then
             local vm = self.Owner:GetViewModel()
             if IsValid(vm) then
-                vm:SetSkin(0) 
+                vm:SetSkin(2) 
             end
         end
     end)
 	
-	if owner:GetAmmoCount(self.Primary.Ammo) == 0 then owner:StripWeapon("weapon_scpsl_injector") end
+	if owner:GetAmmoCount(self.Primary.Ammo) == 0 then owner:StripWeapon("weapon_scpsl_injector_blue") end
 	
 	return true
 end
@@ -81,12 +81,11 @@ local function Heal(owner, weapon)
     
 	
     if IsValid(weapon) then
-        if IsValid(owner) and SERVER and activeWeapon:GetClass() == "weapon_scpsl_injector" then
+        if IsValid(owner) and SERVER and activeWeapon:GetClass() == "weapon_scpsl_injector_blue" then
         
 			if InitializeSEF == true then
-				    owner:ApplyEffect("Energized", 1, 40, 1)
-				    owner:ApplyEffect("Haste", 25, 60)
-				    -- owner:ApplyEffect("Discharge", 20 , 1, 1)
+				    owner:ApplyEffect("Healing", 4, 10, 1)
+				    -- owner:ApplyEffect("Hindered", 1, 20)
 			else
                 owner:SetHealth(math.min(owner:GetMaxHealth(), owner:Health() + HealAmount))
                 owner:SetArmor(math.min(owner:GetMaxArmor(), owner:Armor() + ArmorAmount))
@@ -127,14 +126,14 @@ function SWEP:SecondaryAttack()
             filter = owner
         })
         if trace.HitPos then
-            local ENT = ents.Create("weapon_scpsl_injector")
+            local ENT = ents.Create("weapon_scpsl_injector_blue")
             if IsValid(ENT) then
                 ENT:SetPos(trace.HitPos + trace.HitNormal * 5)
                 ENT:Spawn()
             end
         end
 	    owner:RemoveAmmo(1, "injector")
-	    if owner:GetAmmoCount(self.Primary.Ammo) == 0 then owner:StripWeapon("weapon_scpsl_injector") end -- Reminder
+	    if owner:GetAmmoCount(self.Primary.Ammo) == 0 then owner:StripWeapon("weapon_scpsl_injector_blue") end -- Reminder
 	end
 end
 
@@ -169,7 +168,7 @@ end
 if CLIENT then -- Worldmodel offset
 	local WorldModel = ClientsideModel(SWEP.WorldModel)
 
-	WorldModel:SetSkin(0)
+	WorldModel:SetSkin(1)
 	WorldModel:SetNoDraw(true)
 
 	function SWEP:DrawWorldModel()
