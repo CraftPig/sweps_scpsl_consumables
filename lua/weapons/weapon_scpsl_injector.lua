@@ -12,7 +12,7 @@ SWEP.PrintName = "Adrenaline"
 SWEP.Author = "Craft_Pig"
 SWEP.Purpose = [[
 Provides 40 Temporary Armor
-Grants +40 Units of Movespeed
+Grants +60 Units of Movespeed
 ]]
 SWEP.Category = "SCP: SL"
 
@@ -84,7 +84,7 @@ local function Heal(owner, weapon)
         if IsValid(owner) and SERVER and activeWeapon:GetClass() == "weapon_scpsl_injector" then
         
 			if InitializeSEF == true then
-				    owner:ApplyEffect("Energized", 1, 40, 1)
+				    owner:ApplyEffect("TempShield", 40, 40)
 				    owner:ApplyEffect("Haste", 25, 60)
 				    -- owner:ApplyEffect("Discharge", 20 , 1, 1)
 			else

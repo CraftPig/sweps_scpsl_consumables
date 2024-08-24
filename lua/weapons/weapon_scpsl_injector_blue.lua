@@ -11,8 +11,7 @@ end
 SWEP.PrintName = "Mend Shot"
 SWEP.Author = "Craft_Pig"
 SWEP.Purpose = [[
-Provides 40 Temporary Armor
-Grants +40 Units of Movespeed
+Provides 20 Health and 25 Armor over 5 seconds.
 ]]
 SWEP.Category = "SCP: SL"
 
@@ -84,8 +83,8 @@ local function Heal(owner, weapon)
         if IsValid(owner) and SERVER and activeWeapon:GetClass() == "weapon_scpsl_injector_blue" then
         
 			if InitializeSEF == true then
-				    owner:ApplyEffect("Healing", 4, 10, 1)
-				    -- owner:ApplyEffect("Hindered", 1, 20)
+				    owner:ApplyEffect("Healing", 5, 1, 0.25)
+				    owner:ApplyEffect("Energized", 5, 1, 0.195)
 			else
                 owner:SetHealth(math.min(owner:GetMaxHealth(), owner:Health() + HealAmount))
                 owner:SetArmor(math.min(owner:GetMaxArmor(), owner:Armor() + ArmorAmount))

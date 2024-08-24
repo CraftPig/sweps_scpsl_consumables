@@ -11,8 +11,7 @@ end
 SWEP.PrintName = "Ironskin Serum"
 SWEP.Author = "Craft_Pig"
 SWEP.Purpose = [[
-Provides 40 Temporary Armor
-Grants +40 Units of Movespeed
+Heals 5 Health/Armor and gives 60s of endurance.
 ]]
 SWEP.Category = "SCP: SL"
 

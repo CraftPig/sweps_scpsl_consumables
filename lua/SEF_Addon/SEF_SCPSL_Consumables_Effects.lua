@@ -206,24 +206,18 @@ StatusEffects.SCPAntiCola1 = {
     Desc = "Good for your health, bad for your motor skills. Will save your life in a pinch.",
     Type = "BUFF",
     EffectBegin = function(ent)
-        local speedDecrease = EntBaseStats[ent].RunSpeed * 0.05
-
-        if ent.SCPAntiCola1LastAdded then
-            BaseStatAdd(ent, "RunSpeed", ent.SCPAntiCola1LastAdded)
-        end
-
-        BaseStatRemove(ent, "RunSpeed", speedDecrease)
-        ent.SCPAntiCola1LastAdded = speedDecrease
+        ent:ApplyEffect("Hindered", math.huge, 30)
     end,
     EffectEnd = function(ent)
-        if ent.SCPAntiCola1LastAdded then
-            BaseStatAdd(ent, "RunSpeed", ent.SCPAntiCola1LastAdded)
-            ent.SCPAntiCola1LastAdded = nil
-        end
     end,
     Effect = function(ent, time)
         if CurTime() >= (ent.SCPAntiCola1Timer or 0) then
-            ent:SetHealth(math.min(ent:Health() + 1, ent:GetMaxHealth()))
+            if not ent:HaveEffect("TempShield") then
+                ent:ApplyEffect("TempShield", math.huge, 1)
+            elseif ent:HaveEffect("TempShield") and ent:GetSEFStacks("TempShield") < 20 then
+                ent:AddSEFStacks("TempShield", 1)
+            end
+			ent:SetHealth(math.min(ent:Health() + 1, ent:GetMaxHealth()))
             ent.SCPAntiCola1Timer = CurTime() + 1
         end
 
@@ -240,25 +234,19 @@ StatusEffects.SCPAntiCola2 = {
     Desc = "Good for your health, bad for your motor skills. Will save your life in a pinch.",
     Type = "BUFF",
     EffectBegin = function(ent)
-        local speedDecrease = EntBaseStats[ent].RunSpeed * 0.15
-
-        if ent.SCPAntiCola2LastAdded then
-            BaseStatAdd(ent, "RunSpeed", ent.SCPAntiCola2LastAdded)
-        end
-
-        BaseStatRemove(ent, "RunSpeed", speedDecrease)
-        ent.SCPAntiCola2LastAdded = speedDecrease
+        ent:ApplyEffect("Hindered", math.huge, 80)
     end,
     EffectEnd = function(ent)
-        if ent.SCPAntiCola2LastAdded then
-            BaseStatAdd(ent, "RunSpeed", ent.SCPAntiCola2LastAdded)
-            ent.SCPAntiCola2LastAdded = nil
-        end
     end,
     Effect = function(ent, time)
-        if CurTime() >= (ent.SCPAntiCola2Timer or 0) then
-            ent:SetHealth(math.min(ent:Health() + 3, ent:GetMaxHealth()))
-            ent.SCPAntiCola2Timer = CurTime() + 1
+        if CurTime() >= (ent.SCPAntiCola1Timer or 0) then
+            if not ent:HaveEffect("TempShield") then
+                ent:ApplyEffect("TempShield", math.huge, 1)
+            elseif ent:HaveEffect("TempShield") and ent:GetSEFStacks("TempShield") < 40 then
+                ent:AddSEFStacks("TempShield", 1)
+            end
+			ent:SetHealth(math.min(ent:Health() + 3, ent:GetMaxHealth()))
+            ent.SCPAntiCola1Timer = CurTime() + 1
         end
 
         if ent:Health() <= 1 then

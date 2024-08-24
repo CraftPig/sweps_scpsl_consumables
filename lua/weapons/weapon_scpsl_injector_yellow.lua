@@ -11,8 +11,7 @@ end
 SWEP.PrintName = "Rage Injector"
 SWEP.Author = "Craft_Pig"
 SWEP.Purpose = [[
-Provides 40 Temporary Armor
-Grants +40 Units of Movespeed
+Grants 45 seconds of bloodlust.
 ]]
 SWEP.Category = "SCP: SL"
 
