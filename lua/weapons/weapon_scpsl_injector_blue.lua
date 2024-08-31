@@ -167,7 +167,7 @@ end
 if CLIENT then -- Worldmodel offset
 	local WorldModel = ClientsideModel(SWEP.WorldModel)
 
-	WorldModel:SetSkin(1)
+	WorldModel:SetSkin(2)
 	WorldModel:SetNoDraw(true)
 
 	function SWEP:DrawWorldModel()
