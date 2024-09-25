@@ -9,6 +9,7 @@
 
 ## 🔽 Credits
 - Project Lead: **Craft_Pig**
+- SEF: **Aaron**
 - Assets: **Northwood Studios**
 
 ## 🔽 Disclaimers
