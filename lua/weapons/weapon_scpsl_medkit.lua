@@ -12,6 +12,8 @@ Heals 65 Health.
 Cures Bleeding and Exposed debuff                        					
 ]]
 SWEP.Category = "SCP: SL"
+SWEP.Category1 = "SCP: SL"
+SWEP.Category2 = "Treatment Items"
 
 SWEP.ViewModelFOV = 65
 SWEP.ViewModel = "models/weapons/sweps/scpsl/medkit/v_medkit.mdl"

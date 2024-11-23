@@ -12,6 +12,8 @@ SWEP.PrintName = "Painkillers"
 SWEP.Author = "Craft_Pig"
 SWEP.Purpose = "Slowly restores 50 health over time."
 SWEP.Category = "SCP: SL"
+SWEP.Category1 = "SCP: SL"
+SWEP.Category2 = "Treatment Items"
 
 SWEP.ViewModelFOV = 65
 SWEP.ViewModel = "models/weapons/sweps/scpsl/painkillers/v_painkillers.mdl"

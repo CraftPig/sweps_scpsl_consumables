@@ -2,6 +2,18 @@ AddCSLuaFile()
 
 --[[
 -----------------------------------------------------------------------------------------------------
+Subcategories
+-----------------------------------------------------------------------------------------------------
+]]
+list.Set("WeaponTreeIcons", "SCP: SL", "logo16/logo_scpsl_02.png")
+list.Set("WeaponTreeIcons", "SCP: SL.Treatment Items", "logo16/logo_medkit_01.png")
+list.Set("WeaponTreeIcons", "SCP: SL.SCP Items", "logo16/logo_500_01.png")
+
+list.Set("WeaponTreeThumbnails", "SCP: SL.Treatment Items", "entities/weapon_scpsl_medkit.png")
+list.Set("WeaponTreeThumbnails", "SCP: SL.SCP Items", "entities/weapon_scpsl_500.png")
+
+--[[
+-----------------------------------------------------------------------------------------------------
 Particle Cache
 -----------------------------------------------------------------------------------------------------
 ]]

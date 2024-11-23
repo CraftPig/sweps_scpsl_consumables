@@ -12,6 +12,8 @@ SWEP.PrintName = "SCP 1853"
 SWEP.Author = "Craft_Pig"
 SWEP.Purpose = "Increased dexterity and weapon handling when your life is in danger."
 SWEP.Category = "SCP: SL"
+SWEP.Category1 = "SCP: SL"
+SWEP.Category2 = "SCP Items"
 
 SWEP.ViewModelFOV = 65
 SWEP.ViewModel = "models/weapons/sweps/scpsl/1853/v_1853.mdl"

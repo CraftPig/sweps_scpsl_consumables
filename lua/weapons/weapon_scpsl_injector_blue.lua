@@ -14,6 +14,8 @@ SWEP.Purpose = [[
 Provides 20 Health and 25 Armor over 5 seconds.
 ]]
 SWEP.Category = "SCP: SL"
+SWEP.Category1 = "SCP: SL"
+SWEP.Category2 = "Treatment Items"
 
 SWEP.ViewModelFOV = 70
 SWEP.ViewModel = "models/weapons/sweps/scpsl/injector/v_injector.mdl"

@@ -12,6 +12,8 @@ SWEP.PrintName = "SCP 500"
 SWEP.Author = "Craft_Pig"
 SWEP.Purpose = "The Panacea. Instantly restores all health and cures most afflictions."
 SWEP.Category = "SCP: SL"
+SWEP.Category1 = "SCP: SL"
+SWEP.Category2 = "SCP Items"
 
 SWEP.ViewModelFOV = 65
 SWEP.ViewModel = "models/weapons/sweps/scpsl/500/v_500.mdl"

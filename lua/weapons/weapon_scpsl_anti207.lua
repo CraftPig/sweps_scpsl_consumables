@@ -12,6 +12,8 @@ SWEP.PrintName = "SCP Anti 207"
 SWEP.Author = "Craft_Pig"
 SWEP.Purpose = "Good for your health, bad for your motor skills."
 SWEP.Category = "SCP: SL"
+SWEP.Category1 = "SCP: SL"
+SWEP.Category2 = "SCP Items"
 
 SWEP.ViewModelFOV = 65
 SWEP.ViewModel = "models/weapons/sweps/scpsl/207/v_anti207.mdl"

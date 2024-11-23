@@ -36,8 +36,8 @@ StatusEffects.SCP1853 = {
             end
         end
 
-        if (ent:HaveEffect("SCPCola1") or ent:HaveEffect("SCPCola2") or ent:HaveEffect("SCPCola3")) or (ent:HaveEffect("SCPAntiCola1") or ent:HaveEffect("SCPAntiCola2")) then
-            ent:ApplyEffect("Poison", math.huge, 8, 2)
+        if ent:HaveEffect("SCPCola1") then
+            ent:ApplyEffect("Poison", 1, 8, nil, 5)
         end
     end,
     ServerHooks = {
@@ -69,9 +69,9 @@ StatusEffects.Panacea = {
     Desc = "The cure to all disease.",
 	Type = "BUFF",
     Effect = function(ent, time)   
-		for effectName, effectData in pairs(EntActiveEffects[ent:EntIndex()]) do
+		for effectName, effectData in pairs(EntActiveEffects[ent]) do
             if StatusEffects[effectName].Type == "DEBUFF" then
-			    ent:RemoveEffect(effectName)
+			    ent:SoftRemoveEffect(effectName)
 			end
 		end
 		
@@ -206,16 +206,12 @@ StatusEffects.SCPAntiCola1 = {
     Desc = "Good for your health, bad for your motor skills. Will save your life in a pinch.",
     Type = "BUFF",
     EffectBegin = function(ent)
-		BaseStatRemove(ent, "RunSpeed", 30)
+        ent:ApplyEffect("Hindered", math.huge, 30)
     end,
     EffectEnd = function(ent)
-	    if not ent:HaveEffect("SCPAntiCola2") then
-	    BaseStatReset(ent, "RunSpeed", 30)
-		end
     end,
     Effect = function(ent, time)
         if CurTime() >= (ent.SCPAntiCola1Timer or 0) then
-		    if ent:HaveEffect("Poison") then return end
             if not ent:HaveEffect("TempShield") then
                 ent:ApplyEffect("TempShield", math.huge, 1)
             elseif ent:HaveEffect("TempShield") and ent:GetSEFStacks("TempShield") < 20 then
@@ -223,6 +219,11 @@ StatusEffects.SCPAntiCola1 = {
             end
 			ent:SetHealth(math.min(ent:Health() + 1, ent:GetMaxHealth()))
             ent.SCPAntiCola1Timer = CurTime() + 1
+        end
+
+        if ent:Health() <= 1 then
+            ent:SoftRemoveEffect("SCPAntiCola1")
+            ent:ApplyEffect("SCPAntiColaImmunity", 3)
         end
     end
 }
@@ -233,22 +234,24 @@ StatusEffects.SCPAntiCola2 = {
     Desc = "Good for your health, bad for your motor skills. Will save your life in a pinch.",
     Type = "BUFF",
     EffectBegin = function(ent)
-        BaseStatRemove(ent, "RunSpeed", 50)
+        ent:ApplyEffect("Hindered", math.huge, 80)
     end,
     EffectEnd = function(ent)
-        BaseStatReset(ent, "RunSpeed", 80)
     end,
     Effect = function(ent, time)
         if CurTime() >= (ent.SCPAntiCola1Timer or 0) then
-		    if ent:HaveEffect("Poison") then return end
             if not ent:HaveEffect("TempShield") then
                 ent:ApplyEffect("TempShield", math.huge, 1)
             elseif ent:HaveEffect("TempShield") and ent:GetSEFStacks("TempShield") < 40 then
                 ent:AddSEFStacks("TempShield", 1)
             end
-			
 			ent:SetHealth(math.min(ent:Health() + 3, ent:GetMaxHealth()))
             ent.SCPAntiCola1Timer = CurTime() + 1
+        end
+
+        if ent:Health() <= 1 then
+            ent:SoftRemoveEffect("SCPAntiCola2")
+            ent:ApplyEffect("SCPAntiColaImmunity", 3)
         end
     end
 }

@@ -14,6 +14,8 @@ SWEP.Purpose = [[
 Grants 45 seconds of bloodlust.
 ]]
 SWEP.Category = "SCP: SL"
+SWEP.Category1 = "SCP: SL"
+SWEP.Category2 = "Treatment Items"
 
 SWEP.ViewModelFOV = 70
 SWEP.ViewModel = "models/weapons/sweps/scpsl/injector/v_injector.mdl"

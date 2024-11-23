@@ -11,6 +11,8 @@ Regenerates 30 Health and Armor over 5 seconds.
 Cures Bleeding
 ]]
 SWEP.Category = "SCP: SL"
+SWEP.Category1 = "SCP: SL"
+SWEP.Category2 = "Treatment Items"
 
 SWEP.ViewModelFOV = 65
 SWEP.ViewModel = "models/weapons/sweps/scpsl/medkit/v_medkit.mdl"

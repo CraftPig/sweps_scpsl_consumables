@@ -12,6 +12,8 @@ SWEP.PrintName = "SCP 330 Candies"
 SWEP.Author = "Craft_Pig"
 SWEP.Purpose = "A bag of candies that apply random buffs."
 SWEP.Category = "SCP: SL"
+SWEP.Category1 = "SCP: SL"
+SWEP.Category2 = "SCP Items"
 
 SWEP.ViewModelFOV = 65
 SWEP.ViewModel = "models/weapons/sweps/scpsl/330/v_330.mdl"
